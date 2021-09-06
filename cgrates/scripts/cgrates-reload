@@ -47,7 +47,7 @@ if [ $ALLBRANDS -eq -1 ]; then
     exit -1
 fi
 
-# Remove every redis key except accounts info
+# Remove every redis key except accounts info and tp_versions
 if [ $FLUSHALL -eq 1 ]; then
     RELOADDESTINATIONS=1 # -F forces -D
     SENTINEL_MASTER=`redis-cli -h data.ivozprovider.local -p 26379 sentinel get-master-addr-by-name mymaster | head -n 1`
@@ -55,8 +55,8 @@ if [ $FLUSHALL -eq 1 ]; then
     echo -e "\e[1;31mThis operation cannot be undone, proceed?\n\e[0m"
     read -p "Press enter to continue"
 
-    echo -e "\e[1;32m* \e[1;31mFlushing every key except 'acc_*' ...\e[0m"
-    redis-cli -h $SENTINEL_MASTER -n 10 keys \* | egrep -v "^acc_" | xargs redis-cli -h $SENTINEL_MASTER -n 10 del
+    echo -e "\e[1;32m* \e[1;31mFlushing every key except 'acc_*' and 'tp_versions' ...\e[0m"
+    redis-cli -h $SENTINEL_MASTER -n 10 keys \* | egrep -v "^acc_" | egrep -v "^tp_versions" | xargs redis-cli -h $SENTINEL_MASTER -n 10 del
 fi
 
 if [ $ALLBRANDS -gt 0 ]; then
@@ -79,9 +79,9 @@ for BRAND in $BRANDS; do
     # Reload billing information for this brand
     if [ $RELOADDESTINATIONS -eq 1 ]; then
         echo -e "\e[1;32m* \e[1;31mReloading billing (including destinations) information for brand ${BRAND}...\e[0m"
-        /usr/bin/cgr-console "load_tp_from_stordb Tpid=\"b${BRAND}\" Cleanup=true Validate=true DisableDestinations=false"
+        /usr/bin/cgr-console -server 127.0.0.1:2012 "load_tp_from_stordb Tpid=\"b${BRAND}\" Cleanup=true Validate=true DisableDestinations=false"
     else
         echo -e "\e[1;32m* \e[1;31mReloading billing (excluding destinations) information for brand ${BRAND}...\e[0m"
-        /usr/bin/cgr-console "load_tp_from_stordb Tpid=\"b${BRAND}\" Cleanup=true Validate=true DisableDestinations=true"
+        /usr/bin/cgr-console -server 127.0.0.1:2012 "load_tp_from_stordb Tpid=\"b${BRAND}\" Cleanup=true Validate=true DisableDestinations=true"
     fi
 done
