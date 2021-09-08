@@ -39,6 +39,7 @@
 		"cdrs_conns": ["*localhost"],
 		"chargers_conns": ["*localhost"],
 		"attributes_conns": ["*localhost"],
+		"resources_conns": ["*localhost"],
 		"rals_conns": ["*localhost"]
 	},
 	"kamailio_agent": {
@@ -52,10 +53,13 @@
 	"attributes": {
 		"enabled": true
 	},
+	"resources": {
+		"enabled": true
+	},
 	"chargers": {
 		"enabled": true,
 		"attributes_conns": ["*localhost"],
-		"indexed_selects": true,
+		"indexed_selects": false,
 		"string_indexed_fields": [],
 		"prefix_indexed_fields": [],
 		"nested_fields": false
