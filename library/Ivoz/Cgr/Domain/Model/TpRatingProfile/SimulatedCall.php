@@ -128,18 +128,18 @@ class SimulatedCall
 
         $charge = end($result->Charges);
         $instance->chargePeriod = isset($charge->Increments)
-            ? substr($charge->Increments[0]->Usage, 0, -9)
+            ? $charge->Increments[1]->Usage / 1e9
             : 0;
 
         $rates = $result->Rates->{$rateId};
 
         $interval = $rates[0]->GroupIntervalStart > 0
-            ? substr($rates[0]->GroupIntervalStart, 0, -9)
-            : '0';
+            ? $rates[0]->GroupIntervalStart / 1e9
+            : 0;
         $instance->intervalStart = $interval;
 
         $instance->rate = isset($charge->Increments)
-            ? $charge->Increments[0]->Cost
+            ? $charge->Increments[1]->Cost
             : 0;
 
         $instance->cost = $result->Cost;

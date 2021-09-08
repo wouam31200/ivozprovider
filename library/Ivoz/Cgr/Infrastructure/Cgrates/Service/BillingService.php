@@ -69,7 +69,7 @@ class BillingService implements BillingServiceInterface
 
         $payload = [
             'Tenant' => $tenant,
-            'RatingPlanId' => $ratingPlanTag,
+            'Subject' => $ratingPlanTag,
             'Category' => 'call',
             'AnswerTime' => $answerDateTime->format('Y-m-d\TH:i:s\Z'),
             'Destination' => $destination,
