@@ -79,9 +79,9 @@ for BRAND in $BRANDS; do
     # Reload billing information for this brand
     if [ $RELOADDESTINATIONS -eq 1 ]; then
         echo -e "\e[1;32m* \e[1;31mReloading billing (including destinations) information for brand ${BRAND}...\e[0m"
-        /usr/bin/cgr-console -server 127.0.0.1:2012 "load_tp_from_stordb Tpid=\"b${BRAND}\" Cleanup=true Validate=true DisableDestinations=false"
+        /usr/bin/cgr-console "load_tp_from_stordb Tpid=\"b${BRAND}\" Cleanup=true Validate=true DisableDestinations=false"
     else
         echo -e "\e[1;32m* \e[1;31mReloading billing (excluding destinations) information for brand ${BRAND}...\e[0m"
-        /usr/bin/cgr-console -server 127.0.0.1:2012 "load_tp_from_stordb Tpid=\"b${BRAND}\" Cleanup=true Validate=true DisableDestinations=true"
+        /usr/bin/cgr-console "load_tp_from_stordb Tpid=\"b${BRAND}\" Cleanup=true Validate=true DisableDestinations=true"
     fi
 done

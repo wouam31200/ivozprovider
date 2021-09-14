@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+###############################################################################
+# cgrates-flushall
+#
+# Author: IvozProvider <vozip+ivozprovider@irontec.com>
+# Date: 2021/09/09
+#
+###############################################################################
+#
+# Delete CGRateS Redis data
+#
+###############################################################################
+
+
+# Remove every redis key except accounts info and tp_versions
+SENTINEL_MASTER=`redis-cli -h data.ivozprovider.local -p 26379 sentinel get-master-addr-by-name mymaster | head -n 1`
+echo -e "\e[1;32m* \e[1;97mDetected Redis Sentinel Master: $SENTINEL_MASTER\n\e[0m"
+
+echo -e "\e[1;31mThis operation cannot be undone, proceed?\n\e[0m"
+read -p "Press enter to continue"
+
+echo -e "\e[1;32m* \e[1;31mFlushing every key except 'acc_*' and 'tp_versions'...\e[0m"
+redis-cli -h $SENTINEL_MASTER -n 10 keys \* | egrep -v "^acc_" | egrep -v "^tp_versions" | xargs redis-cli -h $SENTINEL_MASTER -n 10 del
+
+echo -ne "\e[1;31mDelete accounts too (y/N)?\e[0m"
+read
+
+if [ "$REPLY" == "y" ]; then
+    echo -e "\e[1;32m* \e[1;31mDelete accounts...\e[0m"
+    redis-cli -h $SENTINEL_MASTER -n 10 keys \* | egrep "^acc_" | xargs redis-cli -h $SENTINEL_MASTER -n 10 del
+else
+    echo "Not deleting accounts ;)"
+fi
+
+echo -ne "\e[1;31mDelete tp_versions too (y/N)?\e[0m"
+read
+
+if [ "$REPLY" == "y" ]; then
+    echo -e "\e[1;32m* \e[1;31mDelete accounts...\e[0m"
+    redis-cli -h $SENTINEL_MASTER -n 10 keys \* | egrep "^tp_versions" | xargs redis-cli -h $SENTINEL_MASTER -n 10 del
+else
+    echo "Not deleting tp_versions ;)"
+fi
