@@ -77,20 +77,20 @@ class ProcessExternalCdr
             'Usage' => round($trunksCdr->getDuration()) . 's'
         ];
 
+        $carrier = $trunksCdr->getCarrier();
         if ($carrier) {
-            $calculateCost = $carrier->getCalculateCost()
-                ? '1'
-                : '0';
+            $carrierCost = $carrier->getCalculateCost()
+                ? $carrier->getCgrSubject()
+                : 'skip';
 
             $payload['ExtraFields'] = [
-                'carrierId' => $carrier->getCgrSubject(),
-                'calculateCost' => $calculateCost
+                'carrierCost' => $carrierCost,
             ];
         }
 
         try {
             $response = $this->apiClient->sendRequest(
-                'CdrsV1.ProcessExternalCDR',
+                'CDRsV1.ProcessExternalCDR',
                 $payload
             );
 

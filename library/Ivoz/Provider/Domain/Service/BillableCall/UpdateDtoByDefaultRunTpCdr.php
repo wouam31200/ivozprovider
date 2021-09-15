@@ -28,15 +28,7 @@ class UpdateDtoByDefaultRunTpCdr
         BillableCallDto $billableCallDto,
         TrunksCdrInterface $trunksCdr,
         TpCdrInterface $defaultRunTpCdr
-    ): BillableCallDto {
-        if (!$defaultRunTpCdr->getCostDetailsFirstTimespan()) {
-            $errorMsg = sprintf(
-                'Empty cost details. Skipping'
-            );
-            $this->logger->error($errorMsg);
-
-            return $billableCallDto;
-        }
+    ) :BillableCallDto {
 
         $cost = $defaultRunTpCdr->getCost();
         $callee = $defaultRunTpCdr->getDestination()

@@ -38,22 +38,7 @@ class TpCdr extends TpCdrAbstract implements TpCdrInterface
             return null;
         }
 
-        return $usage / (1000 * 1000 * 1000);
-    }
-
-    /**
-     * @return array|null
-     */
-    public function getCostDetailsFirstTimespan()
-    {
-        $costDetails = $this->getCostDetails();
-        if (empty($costDetails)) {
-            return null;
-        }
-
-        $timespans = $costDetails['Timespans'] ?? [];
-
-        return current($timespans);
+        return $usage / 1e9;
     }
 
     /**
@@ -61,14 +46,16 @@ class TpCdr extends TpCdrAbstract implements TpCdrInterface
      */
     public function getStartTime()
     {
-        $timespan = $this->getCostDetailsFirstTimespan();
-        if (!$timespan) {
+        $costDetails = $this->getCostDetails();
+        if (!$costDetails) {
             return null;
         }
 
+        $startTime = $costDetails['StartTime'];
+
         return \DateTime::createFromFormat(
             'Y-m-d\TH:i:s\Z',
-            $timespan['TimeStart'],
+            $startTime,
             new \DateTimeZone('UTC')
         );
     }
@@ -78,12 +65,19 @@ class TpCdr extends TpCdrAbstract implements TpCdrInterface
      */
     public function getRatingPlanTag(): string
     {
-        $timespan = $this->getCostDetailsFirstTimespan();
-        if (!$timespan) {
+        $costDetails = $this->getCostDetails();
+        if (empty($costDetails)) {
             return '';
         }
 
-        return $timespan['RatingPlanId'] ?? '';
+        $ratingFilters = $costDetails['RatingFilters'] ?? [];
+        $ratingFilter = current($ratingFilters);
+
+        if (!$ratingFilter) {
+            return '';
+        }
+
+        return $ratingFilter['RatingPlanID'] ?? '';
     }
 
     /**
@@ -91,11 +85,18 @@ class TpCdr extends TpCdrAbstract implements TpCdrInterface
      */
     public function getMatchedDestinationTag(): string
     {
-        $timespan = $this->getCostDetailsFirstTimespan();
-        if (!$timespan) {
+        $costDetails = $this->getCostDetails();
+        if (empty($costDetails)) {
             return '';
         }
 
-        return $timespan['MatchedDestId'] ?? '';
+        $ratingFilters = $costDetails['RatingFilters'] ?? [];
+        $ratingFilter = current($ratingFilters);
+
+        if (!$ratingFilter) {
+            return '';
+        }
+
+        return $ratingFilter['DestinationID'] ?? '';
     }
 }
