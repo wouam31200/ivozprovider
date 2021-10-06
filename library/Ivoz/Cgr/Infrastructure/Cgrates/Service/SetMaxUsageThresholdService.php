@@ -80,12 +80,15 @@ class SetMaxUsageThresholdService extends AbstractApiBasedService
             'Tenant' => $tenant,
             'Account' => $account,
             'UniqueID' => '*default',
-            'BalanceType' => '*monetary',
-            'ThresholdValue' => $threshold
+            'GroupID' => $account,
+            'ActionTrigger' => [
+                'BalanceType' => '*monetary',
+                'ThresholdValue' => $threshold
+            ]
         ];
 
         $this->sendRequest(
-            'ApierV1.SetAccountActionTriggers',
+            'APIerSv1.SetAccountActionTriggers',
             $payload
         );
     }
