@@ -620,7 +620,8 @@ abstract class TpCdrAbstract
 
     public function getUsage(): int
     {
-        return $this->usage;
+        //doctrine uses bigints as string
+        return intval($this->usage);
     }
 
     protected function setExtraFields(string $extraFields): static
