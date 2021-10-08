@@ -48,7 +48,7 @@ services:
   Ivoz\Cgr\Infrastructure\Cgrates\Service\SetMaxUsageThresholdService:
     public: true
 
-  Ivoz\Cgr\Infrastructure\Cgrates\Service\ReassembleTriggerService:
+  Ivoz\Cgr\Infrastructure\Cgrates\Service\ResetDailyUsageCounterService:
     public: true
 
   Ivoz\Cgr\Infrastructure\Cgrates\Service\EnableAccountService:

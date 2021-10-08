@@ -5,7 +5,7 @@ namespace Ivoz\Cgr\Infrastructure\Cgrates\Service;
 use Graze\GuzzleHttp\JsonRpc\ClientInterface;
 use Ivoz\Core\Infrastructure\Domain\Service\Cgrates\AbstractApiBasedService;
 
-class ReassembleTriggerService extends AbstractApiBasedService
+class ResetDailyUsageCounterService extends AbstractApiBasedService
 {
     public function __construct(
         ClientInterface $jsonRpcClient
@@ -18,16 +18,16 @@ class ReassembleTriggerService extends AbstractApiBasedService
     /**
      * @return void
      */
-    public function execute(string $tenant, string $account, bool $reset = false)
+    public function execute(string $tenant, string $account)
     {
         $arguments = [
             'Tenant' => $tenant,
             'Account' => $account,
-            'ResetCounters' => $reset
+            'ActionsId' => "RESET_COUNTERS"
         ];
 
         $this->sendRequest(
-            'ApierV1.ResetAccountActionTriggers',
+            'APIerSv1.ExecuteAction',
             $arguments
         );
     }

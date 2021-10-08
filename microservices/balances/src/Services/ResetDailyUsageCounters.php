@@ -3,22 +3,22 @@
 namespace Services;
 
 use Ivoz\Cgr\Infrastructure\Cgrates\Service\EnableAccountService;
-use Ivoz\Cgr\Infrastructure\Cgrates\Service\ReassembleTriggerService;
+use Ivoz\Cgr\Infrastructure\Cgrates\Service\ResetDailyUsageCounterService;
 use Ivoz\Provider\Domain\Model\Brand\BrandInterface;
 use Ivoz\Provider\Domain\Model\Brand\BrandRepository;
 
 class ResetDailyUsageCounters
 {
-    private $reassembleTriggerService;
+    private $resetDailyUsageCounterService;
     private $enableAccountService;
     private $brandRepository;
 
     public function __construct(
-        ReassembleTriggerService $reassembleTriggerService,
+        ResetDailyUsageCounterService $resetDailyUsageCounterService,
         EnableAccountService $enableAccountService,
         BrandRepository $brandRepository
     ) {
-        $this->reassembleTriggerService = $reassembleTriggerService;
+        $this->resetDailyUsageCounterService = $resetDailyUsageCounterService;
         $this->enableAccountService = $enableAccountService;
         $this->brandRepository = $brandRepository;
     }
@@ -36,10 +36,9 @@ class ResetDailyUsageCounters
                 $tenant = $brand->getCgrTenant();
                 $account = $company->getCgrSubject();
 
-                $this->reassembleTriggerService->execute(
+                $this->resetDailyUsageCounterService->execute(
                     $tenant,
-                    $account,
-                    true
+                    $account
                 );
 
                 $this->enableAccountService->execute(
