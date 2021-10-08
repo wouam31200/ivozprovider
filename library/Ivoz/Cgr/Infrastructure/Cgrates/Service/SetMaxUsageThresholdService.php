@@ -8,13 +8,11 @@ use Ivoz\Core\Infrastructure\Domain\Service\Cgrates\AbstractApiBasedService;
 class SetMaxUsageThresholdService extends AbstractApiBasedService
 {
     private $companyBalanceService;
-    private $reassembleTriggerService;
     private $enableAccountService;
 
     public function __construct(
         ClientInterface $jsonRpcClient,
         CompanyBalanceService $companyBalanceService,
-        ReassembleTriggerService $reassembleTriggerService,
         EnableAccountService $enableAccountService
     ) {
         parent::__construct(
@@ -22,7 +20,6 @@ class SetMaxUsageThresholdService extends AbstractApiBasedService
         );
 
         $this->companyBalanceService = $companyBalanceService;
-        $this->reassembleTriggerService = $reassembleTriggerService;
         $this->enableAccountService = $enableAccountService;
     }
 
@@ -44,11 +41,6 @@ class SetMaxUsageThresholdService extends AbstractApiBasedService
         );
 
         if ($mustReassemble) {
-            $this->reassembleTriggerService->execute(
-                $tenant,
-                $account
-            );
-
             $this->enableAccountService->execute(
                 $tenant,
                 $account
