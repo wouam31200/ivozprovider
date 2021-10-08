@@ -21,12 +21,15 @@ class EnableAccountService extends AbstractApiBasedService
     public function execute(string $tenant, string $account)
     {
         $this->sendRequest(
-            'ApierV1.SetAccount',
+            'APIerSv1.SetAccount',
             [
                 'Tenant' => $tenant,
                 'Account' => $account,
-                'Disabled' => false
+                'ExtraOptions' => [
+                    'Disabled' => false
+                ]
             ]
         );
+
     }
 }
